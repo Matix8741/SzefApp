@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="isDone"
+            type="Boolean" />
+
+        <variable
+            name="taskText"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/AppBaseContainer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@{isDone}"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text"
+            style="@style/AppBaseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:foreground="@{isDone ? @drawable/strike_line : @drawable/empty}"
+            android:text="@{taskText}"
+            app:layout_constraintLeft_toRightOf="@id/checkbox"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="text" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
+
+        <TextView
+            android:id="@+id/time_text"
+            style="@style/AppBaseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toLeftOf="@id/delete_button"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="10:50" />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            style="@style/AppBaseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:contentDescription="@string/clock_image"
+            android:src="@drawable/ic_delete_black_24dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
