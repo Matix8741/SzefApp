@@ -1,13 +1,9 @@
 package com.example.szefapp.ui.task
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.szefapp.R
 import com.example.szefapp.databinding.TaskLayoutBinding
 import com.example.szefapp.persistence.task.TaskEntity
 
@@ -28,8 +24,6 @@ class TaskListAdapter(
     ): TaskListViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = TaskLayoutBinding.inflate(layoutInflater, parent, false)
-        val taskView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.task_layout, parent, false) as ConstraintLayout
         return TaskListViewHolder(binding)
     }
 

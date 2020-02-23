@@ -3,4 +3,5 @@
     <string name="clock_image">image of a clock</string>
     <string name="add_new_task">+</string>
     <string name="strike_string"><strike>%1$s</strike></string>
+    <string name="pick_days_to_reload">Pick number of days to reload task</string>
 </resources>

@@ -5,21 +5,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.szefapp.AppProvider
-import com.example.szefapp.R
 import com.example.szefapp.ViewModelFactory
+import com.example.szefapp.databinding.TaskListFragmentBinding
 import com.example.szefapp.persistence.task.TaskEntity
+import com.example.szefapp.ui.general.NumberPickerDialogFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class TaskListFragment : Fragment(), TaskListAdapter.TaskListener {
+class TaskListFragment : Fragment(), TaskListAdapter.TaskListener,
+    NumberPickerDialogFragment.NoticeDialogListener {
 
     private lateinit var viewModelFactory: ViewModelFactory
 
@@ -27,6 +26,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.TaskListener {
 
     private val taskDisposable = CompositeDisposable()
     private lateinit var taskListAdapter: TaskListAdapter
+    private lateinit var binding: TaskListFragmentBinding
 
     companion object {
         fun newInstance() = TaskListFragment()
@@ -36,36 +36,57 @@ class TaskListFragment : Fragment(), TaskListAdapter.TaskListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.task_list_fragment, container, false)
+        val layoutInflater = LayoutInflater.from(context)
+        binding = TaskListFragmentBinding.inflate(layoutInflater, container, false)
+        binding.newTaskDays = 0
         viewModelFactory = AppProvider.provideViewModelFactory(requireContext())
         val viewManager = LinearLayoutManager(requireContext())
         taskListAdapter = TaskListAdapter(arrayOf(), this)
-        view.findViewById<RecyclerView>(R.id.task_list).apply {
+        binding.taskList.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = taskListAdapter
         }
-        val editText = view.findViewById<EditText>(R.id.new_task_description)
-//        val numberPicker = view.findViewById<NumberPicker>(R.id.number_picker)
-//        numberPicker.minValue = 0
-//        numberPicker.maxValue = 30
-//        numberPicker.wrapSelectorWheel = false
-        view.findViewById<Button>(R.id.add_new_task_button).setOnClickListener {
+        binding.addDaysButton.setOnClickListener {
+            NumberPickerDialogFragment(this, binding.newTaskDays!!).show(
+                activity!!.supportFragmentManager,
+                "numberPicker"
+            )
+        }
+        binding.addNewTaskButton.setOnClickListener {
             val newTask =
-                TaskEntity(text = editText.text.toString(), isDone = false, refreshTimer = 0)
-            editText.text.clear()
+                TaskEntity(
+                    text = binding.newTaskDescription.text.toString(),
+                    isDone = false,
+                    refreshTimer = binding.newTaskDays!!
+                )
+            binding.newTaskDescription.text.clear()
             viewModel.updateTask(newTask)
         }
-        return view
+        return binding.root
+    }
+
+    private fun refreshTasks() {
+        val currentDateInMilliseconds = System.currentTimeMillis()
+        for(task in viewModel.getTasks().firstOrError().blockingGet()){
+            if(task.refreshTimer > 0){
+                val refreshMilliseconds = task.refreshTimer *24*60 * 60 * 1000
+                if(currentDateInMilliseconds >= task.modificationTime + refreshMilliseconds){
+                    task.isDone = false
+                    viewModel.updateTask(task)
+                }
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
+        refreshTasks()
         taskDisposable.add(
             viewModel.getTasks().subscribeOn(Schedulers.io()).observeOn(
                 AndroidSchedulers.mainThread()
             ).subscribe({ taskListAdapter.updateData(it) }, { error ->
-                Log.e("error", error.message)
+                Log.e("error", error.message!!)
             })
         )
     }
@@ -81,6 +102,10 @@ class TaskListFragment : Fragment(), TaskListAdapter.TaskListener {
 
     override fun onUpdate(task: TaskEntity) {
         viewModel.updateTask(task)
+    }
+
+    override fun onDialogPositiveClick(selectedNumber: Int) {
+        binding.newTaskDays = selectedNumber
     }
 
 }

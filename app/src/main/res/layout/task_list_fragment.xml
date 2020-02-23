@@ -6,7 +6,7 @@
 <data>
     
     <variable
-        name="new_selected_days"
+        name="newTaskDays"
         type="Integer" />
 </data>
 
@@ -50,6 +50,7 @@
                         android:inputType="text" />
 
                     <Button
+                        android:id="@+id/addDaysButton"
                         style="@style/AppBaseButton"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
@@ -60,7 +61,8 @@
                         android:elevation="0dp"
                         android:padding="0dp"
                         android:stateListAnimator="@null"
-                        android:text="0" />
+                        android:text="@{Integer.toString(newTaskDays)}"
+                        tools:text="14"/>
 
                     <Button
                         android:id="@+id/add_new_task_button"

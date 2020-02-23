@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.example.szefapp.ui.task.TaskListFragment
 import com.facebook.stetho.Stetho
 
-class MainActivity : AppCompatActivity() {
+class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

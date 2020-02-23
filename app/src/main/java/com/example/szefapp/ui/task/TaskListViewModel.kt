@@ -24,7 +24,7 @@ fun getTasks(): Observable<Array<TaskEntity>> = dataSource.getTasks()
         uiScope.launch { try {
             dataSource.insertTask(task).subscribeOn(Schedulers.io()).subscribe()
         } catch (e:Exception){
-            Log.e("e: ", e.message)
+            Log.e("e: ", e.message!!)
         }}
     }
     override fun onCleared() {
@@ -36,7 +36,7 @@ fun getTasks(): Observable<Array<TaskEntity>> = dataSource.getTasks()
         uiScope.launch { try {
             dataSource.deleteTask(id).subscribeOn(Schedulers.io()).subscribe()
         } catch (e:Exception){
-            Log.e("e: ", e.message)
+            Log.e("e: ", e.message!!)
         }}
 
     }
