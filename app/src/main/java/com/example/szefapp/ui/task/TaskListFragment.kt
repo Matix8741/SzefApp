@@ -41,7 +41,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.TaskListener,
         binding.newTaskDays = 0
         viewModelFactory = AppProvider.provideViewModelFactory(requireContext())
         val viewManager = LinearLayoutManager(requireContext())
-        taskListAdapter = TaskListAdapter(arrayOf(), this)
+        taskListAdapter = TaskListAdapter(mutableListOf(), this)
         binding.taskList.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
@@ -62,13 +62,15 @@ class TaskListFragment : Fragment(), TaskListAdapter.TaskListener,
                 )
             binding.newTaskDescription.text.clear()
             viewModel.updateTask(newTask)
+            taskListAdapter.addDataItem(newTask)
+            binding.taskList.scrollToPosition(taskListAdapter.itemCount-1)
         }
         return binding.root
     }
 
     private fun refreshTasks() {
         val currentDateInMilliseconds = System.currentTimeMillis()
-        for(task in viewModel.getTasks().firstOrError().blockingGet()){
+        for(task in viewModel.getTasks().blockingGet()){
             if(task.refreshTimer > 0){
                 val refreshMilliseconds = task.refreshTimer *24*60 * 60 * 1000
                 if(currentDateInMilliseconds >= task.modificationTime + refreshMilliseconds){
@@ -98,6 +100,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.TaskListener,
 
     override fun onDelete(id: String) {
         viewModel.deleteTask(id)
+        binding.taskList.scrollToPosition(taskListAdapter.itemCount-1)
     }
 
     override fun onUpdate(task: TaskEntity) {

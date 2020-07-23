@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.szefapp.persistence.task.TaskDao
 import com.example.szefapp.persistence.task.TaskEntity
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ class TaskListViewModel(private val dataSource: TaskDao) : ViewModel() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-fun getTasks(): Observable<Array<TaskEntity>> = dataSource.getTasks()
+fun getTasks(): Single<Array<TaskEntity>> = dataSource.getTasks().firstOrError()
 
     fun updateTask(task: TaskEntity){
         uiScope.launch { try {

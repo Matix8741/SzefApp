@@ -9,7 +9,7 @@ import com.example.szefapp.persistence.task.TaskEntity
 
 
 class TaskListAdapter(
-    private var taskList: Array<TaskEntity>,
+    private var taskList: MutableList<TaskEntity>,
     private val listener: TaskListener
 ) :
     RecyclerView.Adapter<TaskListAdapter.TaskListViewHolder>() {
@@ -29,36 +29,43 @@ class TaskListAdapter(
 
 
     fun updateData(taskList: Array<TaskEntity>) {
-        this.taskList = taskList
-        notifyDataSetChanged()
+            this.taskList = taskList.toMutableList()
+            notifyDataSetChanged()
     }
-
+    fun addDataItem(task: TaskEntity) {
+        this.taskList.add(taskList.size, task)
+        notifyItemInserted(taskList.size-1)
+    }
     override fun onBindViewHolder(holder: TaskListViewHolder, position: Int) {
-        holder.taskBinding.taskText = taskList[position].text
-        holder.taskBinding.isDone = taskList[position].isDone
+        val task = taskList[position]
+        holder.taskBinding.taskText = task.text
+        holder.taskBinding.isDone = task.isDone
         holder.taskBinding.deleteButton.setOnClickListener {
-            listener.onDelete(
-                taskList[position].id
-            )
+            listener.onDelete(task.id)
+            val deletePosition = taskList.indexOf(task);
+            if(deletePosition > -1){
+                taskList.removeAt(deletePosition)
+                notifyItemRemoved(deletePosition)
+            }
         }
         holder.taskBinding.checkbox.setOnClickListener { view ->
-            val modifiedTask = taskList[position]
             if ((view as CheckBox).isChecked) {
                 holder.taskBinding.isDone = true
-                modifiedTask.modificationTime = System.currentTimeMillis()
-                modifiedTask.isDone = true
+                task.modificationTime = System.currentTimeMillis()
+                task.isDone = true
             } else {
                 val fiveMinutesInMilliseconds = 5 * 60 * 1000
                 if (taskList[position].modificationTime + fiveMinutesInMilliseconds > System.currentTimeMillis()) {
                     holder.taskBinding.isDone = false
-                    modifiedTask.modificationTime = System.currentTimeMillis()
-                    modifiedTask.isDone = false
+                    task.modificationTime = System.currentTimeMillis()
+                    task.isDone = false
                 } else {
                     view.isChecked = true
                     view.isClickable = false
                 }
             }
-            listener.onUpdate(modifiedTask)
+            listener.onUpdate(task)
+            notifyItemChanged(taskList.indexOf(task), task)
         }
     }
 
