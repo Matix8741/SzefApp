@@ -1,21 +1,27 @@
 package com.example.szefapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.szefapp.ui.task.TaskListFragment
-import com.facebook.stetho.Stetho
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.example.szefapp.databinding.MainActivityBinding
 
 class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, TaskListFragment.newInstance())
-                .commitNow()
-        }
-        Stetho.initializeWithDefaults(this);
+
+        DataBindingUtil.setContentView<MainActivityBinding>(this, R.layout.main_activity)
+
+        // Add support for an Up button in the app bar
+        val navController = this.findNavController(R.id.nav_host_fragment_container)
+        NavigationUI.setupActionBarWithNavController(this, navController)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.nav_host_fragment_container)
+        return navController.navigateUp()
+    }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SzefApp</string>
+    <string name="clock_image">zdjęcie zegarka</string>
+    <string name="add_new_task">Dodaj nowe zadanie</string>
+    <string name="pick_days_to_reload">Wybierz liczbe dni to ponownego aktywowania zadania</string>
+    <string name="reward_icon">Ikona nagrody</string>
+    <string name="create_new_task">Stwórz nowe zadanie</string>
+    <string name="repeat">"powtarzalny"</string>
+    <string name="task_name_label">Nazwa zadania</string>
+    <string name="monday">Poniedziaek</string>
+    <string name="tuesday">Wtorek</string>
+    <string name="friday">Piątek</string>
+    <string name="saturday">Sobota</string>
+    <string name="sunday">Niedziela</string>
+    <string name="wednesday">Środa</string>
+    <string name="thursday">Czwartek</string>
+</resources>

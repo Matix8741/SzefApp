@@ -1,4 +1,4 @@
-package com.example.szefapp.ui.task
+package com.example.szefapp.ui.tasklist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -49,6 +49,7 @@ class TaskListAdapter(
             }
         }
         holder.taskBinding.checkbox.setOnClickListener { view ->
+
             if ((view as CheckBox).isChecked) {
                 holder.taskBinding.isDone = true
                 task.modificationTime = System.currentTimeMillis()
