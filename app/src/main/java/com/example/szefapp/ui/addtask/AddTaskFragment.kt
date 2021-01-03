@@ -34,7 +34,6 @@ class AddTaskFragment : BaseFragment<AddTaskViewModel, FragmentAddTaskBinding>()
             viewModel.updateTask(
                 TaskEntity(
                     isDone = false,
-                    refreshTimer = 0,
                     text = binding.addNewTaskDescription.editText?.text.toString()
                 )
             )

@@ -54,12 +54,12 @@ class TaskListFragment : BaseFragment<TaskListViewModel, TaskListFragmentBinding
 
     private fun initTaskList() {
         taskListAdapter = TaskListAdapter(mutableListOf(), this)
-        binding.taskList.apply {
+        binding.openTaskList.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskListAdapter
         }
-        binding.taskList.scrollToPosition(taskListAdapter.itemCount - 1)
+        binding.openTaskList.scrollToPosition(taskListAdapter.itemCount - 1)
     }
 
     private fun initAnimations() {
@@ -81,22 +81,8 @@ class TaskListFragment : BaseFragment<TaskListViewModel, TaskListFragmentBinding
         return simpleDateFormat.format(Date()).capitalize(Locale.getDefault())
     }
 
-    private fun refreshTasks() {
-        val currentDateInMilliseconds = System.currentTimeMillis()
-        for (task in viewModel.getTasks().blockingGet()) {
-            if (task.refreshTimer > 0) {
-                val refreshMilliseconds = task.refreshTimer * 24 * 60 * 60 * 1000
-                if (currentDateInMilliseconds >= task.modificationTime + refreshMilliseconds) {
-                    task.isDone = false
-                    viewModel.updateTask(task)
-                }
-            }
-        }
-    }
-
     override fun onStart() {
         super.onStart()
-        refreshTasks()
         val navController = findNavController()
         binding.fab.setOnClickListener {
             navController.navigate(R.id.action_taskListFragment_to_addTaskFragment)
@@ -110,7 +96,7 @@ class TaskListFragment : BaseFragment<TaskListViewModel, TaskListFragmentBinding
 
     override fun onDelete(id: String) {
         viewModel.deleteTask(id)
-        binding.taskList.scrollToPosition(taskListAdapter.itemCount - 1)
+        binding.openTaskList.scrollToPosition(taskListAdapter.itemCount - 1)
     }
 
     override fun onUpdate(task: TaskEntity) {

@@ -6,7 +6,7 @@ import com.example.szefapp.ui.core.BaseViewModel
 
 class AddTaskViewModel(private val dataSource: TaskDao) : BaseViewModel() {
 
-    private var newTask = TaskEntity(isDone = false, refreshTimer = 0, text = "")
+    private var newTask = TaskEntity(isDone = false, text = "")
 
     fun updateTask(task: TaskEntity) {
         load { dataSource.insertTask(task) }
@@ -18,6 +18,6 @@ class AddTaskViewModel(private val dataSource: TaskDao) : BaseViewModel() {
 
     fun changeDescriptionOfNewTask(text: String) {
         newTask =
-            TaskEntity(isDone = newTask.isDone, refreshTimer = newTask.refreshTimer, text = text)
+            TaskEntity(isDone = newTask.isDone, text = text)
     }
 }

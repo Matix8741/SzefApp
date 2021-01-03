@@ -29,13 +29,15 @@ class TaskListAdapter(
 
 
     fun updateData(taskList: Array<TaskEntity>) {
-            this.taskList = taskList.toMutableList()
-            notifyDataSetChanged()
+        this.taskList = taskList.toMutableList()
+        notifyDataSetChanged()
     }
+
     fun addDataItem(task: TaskEntity) {
         this.taskList.add(taskList.size, task)
-        notifyItemInserted(taskList.size-1)
+        notifyItemInserted(taskList.size - 1)
     }
+
     override fun onBindViewHolder(holder: TaskListViewHolder, position: Int) {
         val task = taskList[position]
         holder.taskBinding.taskText = task.text
@@ -43,7 +45,7 @@ class TaskListAdapter(
         holder.taskBinding.deleteButton.setOnClickListener {
             listener.onDelete(task.id)
             val deletePosition = taskList.indexOf(task);
-            if(deletePosition > -1){
+            if (deletePosition > -1) {
                 taskList.removeAt(deletePosition)
                 notifyItemRemoved(deletePosition)
             }
@@ -52,13 +54,13 @@ class TaskListAdapter(
 
             if ((view as CheckBox).isChecked) {
                 holder.taskBinding.isDone = true
-                task.modificationTime = System.currentTimeMillis()
+                task.lastDoneDate = System.currentTimeMillis()
                 task.isDone = true
             } else {
                 val fiveMinutesInMilliseconds = 5 * 60 * 1000
-                if (taskList[position].modificationTime + fiveMinutesInMilliseconds > System.currentTimeMillis()) {
+                if (taskList[position].lastDoneDate + fiveMinutesInMilliseconds > System.currentTimeMillis()) {
                     holder.taskBinding.isDone = false
-                    task.modificationTime = System.currentTimeMillis()
+                    task.lastDoneDate = System.currentTimeMillis()
                     task.isDone = false
                 } else {
                     view.isChecked = true
